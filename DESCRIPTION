@@ -1,0 +1,16 @@
+Package: pel
+Type: Package
+Title: The Power Exponentiated Lindley Distribution
+Version: 0.1.0
+Date: 2023-05-10
+Authors@R: 
+	   c(person(given = "Paul",
+           	family = "Smith",
+           	role = c("aut", "cre"),
+           	email = "paul@waternumbers.co.uk",
+           	comment = c(ORCID = "0000-0002-0034-3412")))
+Description: An implimentation of the Power Exponentiated Lindley Distribution given in Rajitha and Akhilnath (2022) <doi:10.1007/s41060-022-00369-2>. The 'pel' package contains density, cumulative and quantile functions as well parameter estimation through maximum likelihood.
+License: GPL-3
+Encoding: UTF-8
+Imports: lamW
+Suggests: tinytest
