@@ -1,40 +1,152 @@
+The paper of Rajitha and Akhilnath\supercite{Rajitha2022} introduces the Power Exponentiated Lindley (PEL) distribution based upon the Power Exponentiated Family of distribution given in Modi\supercite{Modi}.
+
+Rajitha and Akhilnath\supercite{Rajitha2022} provide various properties of the distribution, such as the moments, and outline a numerical scheme to find the Maximum Likelihood parameter estimates given a sample of data. This scheme is tested in a simulation study, which is replicated in Section~\ref{sec:sim}. Section <??> of Rajitha and Akhilnath\supercite{Rajitha2022} compares the fit of the PEL distribution to a number of others on a number of COVID data sets. This exercise is repeated in Section~\ref{sec:covid}.
+
+This paper first reviews the derivation of the PEL distribution and maximum likelihood estimates.
 
 
+\section{The Power Exponentiated Family}
 
-
-
-\subsection{Density and distribution functions}
-
-A continuous random variable $X$ follows the Lindley distribution, then the cumulative distribution function (cdf) with
-parameter q is given by
-
-\begin{equation}
-G\left(x\right) = 1 - \frac{\exp\left(-qx\right)\left(1+q+qx\right)}{1+q} \quad x > 0, q > 0
-\end{equation}
-
-and the probability density function (pdf) as
+The Power Exponentiated Lindley (PEL) distribution introduced in Rajitha and Akhilnath\supercite{Rajitha2022} is based on the Power Exponentiated family of Modi\supercite{Modi}. For a random variable $X$ the Power Exponentiated family transforms a base distribution to a new valid probability distribution. Let a base distributions have a cumulative distribution function (cdf) $G\left(x\right)$ and density $g\left(x\right)$ dependent upon parameters $\theta$. Using two shape parameters $a$ and $v$ the Power Exponentiated cumulative distribution fuction is given by
 
 \begin{equation}
-g\left(x\right) = \frac{q^2}{q+1}\left(1+x\right)\exp\left(-qx\right) \quad x > 0, q > 0
+  F\left(x\right) = \left\{
+    \begin{array}{cl}
+      \frac{ v^{G\left(x\right)^{a}} - 1 }{v-1} & a>0,v>0,v\neq1\\
+      G\left(x\right)^{a} & a>0,v=1\\
+    \end{array}
+    \right.
 \end{equation}
 
-
-
-
-
-The power exponentiated Lindley (PEL) distribution is introduced in Eq (5) and (6) of \supercite{Rajitha2002}. The cumulative density function for a PEL distribution with shape parameters $a$ and $v$ along with scale parameter $q$ is given in Eq <ref> where
+and the density
 
 \begin{equation}
-\phi\left(x\right) = \frac{\exp\left(-qx\right)\left(1+q+qx\right)}{1+q}
+  f\left(x\right) = \left\{
+    \begin{array}{cl}
+      \frac{ a v^{G\left(x\right)^{a}} \log\left(v\right) G\left(x\right)^{a-1}g\left(x\right)}{v-1} & x>0,a>0,q>0,v>0,v\neq1\\
+      aG\left(x\right)^{a-1}g\left(x\right) & a>0,v=1\\
+    \end{array}
+    \right.
 \end{equation}
 
-\begin{eqnarray}
-F\left(x\right) = \frac{ v^{\phi\left(x\right)^{a}} - 1 }{v-1} \\
-x>0,a>0,q>0,v>0
-\end{eqnarray}
+The quantile function, finding $x$ such that $F\left(x\right) = z$ is formulated in terms of the cdf of the base distribution as
+
+\begin{equation}
+  G\left(x\right) = \left\{
+    \begin{array}{cl}
+      \left( \frac{ \log\left(1-z-zv\right) }{ \log v} \right)^{\frac{1}{a}} & a>0,v>0,v\neq1\\
+      z^{\frac{1}{a}} & a>0,v=1\\
+    \end{array}
+    \right.
+\end{equation}
+
+These formulea differ from those given in Rajitha and Akhilnath\supercite{Rajitha2002} by handling the case of $v=1$; the results for which are derived from the limit
+
+\begin{equation}
+  \lim_{\eta \rightarrow 1} \frac{\eta^\beta -1}{\eta-1} = \beta
+\end{equation}
+
+\subsection{Maximum Likelihood estimation}
+
+Given a sample of data $\mathbf{x} = \left(x_{1},x_{2},\ldots,x_{n}\right)$ the log likelihood can be written as
+
+\begin{equation}
+\label{eq:loglike}
+  l\left(\mathbf{x}\right) = \left\{
+  \begin{array}{cl}
+    n\log\left(a\right) + \log\left(v\right) \sum G\left(x\right)^{a}
+    + \left(a-1\right) \sum \log\left(G\left(x\right)\right)
+    + \sum \log\left(g\left(x\right)\right) + n\log\left(\frac{\log v}{v-1}\right) & a>0,v>0,v\neq1\\
+    n\log\left(a\right) + \left(a-1\right)\sum \log\left(G\left(x\right)\right)
+    + \sum \log\left(g\left(x\right)\right) & a>0,v=1\\
+    \end{array}
+    \right.
+\end{equation}
+
+The gradient of log-likelihood with respect to $a$ and $v$ is readily computed as
+
+\begin{equation}
+\frac{\partial l}{\partial a} = \frac{n}{a} + \sum \log\left(G\left(x\right)\right) +
+\log\left(v\right) \sum G\left(x\right)^{a}\log\left(G\left(x\right)\right)
+\end{equation}
+
+and
+
+\begin{equation}
+  \frac{\partial l}{\partial v} = \left\{
+  \begin{array}{cl}          
+  \frac{1}{v}\left( \sum G\left(x\right)^{a} +n \left(\frac{1}{\log{v}} + \frac{v}{v-1}\right)\right) & a>0,v>0,v\neq1\\
+  \sum G\left(x\right)^{a} - \frac{n}{2} & a>0,v=1\\
+    \end{array}            
+    \right.
+\end{equation}
+
+The gradient with respect to the parameter of the base distribution takes the form
+
+\begin{equation}
+\frac{\partial l}{\partial \theta} =
+\sum \left( \left( \log\left(v\right)a G\left(x\right)^{a-1} + \frac{a-1}{G\left(x\right)}\right)
+\frac{\partial }{\partial \theta} G\left(x\right)\right) +
+\frac{\partial }{\partial \theta} \sum \log\left(g\left(\right)\right)
+\end{equation}
+
+In contrast to the formulea given in Rajitha and Akhilnath\supercite{Rajitha2022} these handle the case $v=1$. Care has also been taken to ensure the individuals terms within the formulea can be evaluated for $v<1$ by not simplifying $\log\left(\frac{\log v}{v-1}\right)$ in (\ref{eq:loglike}).
+
+
+\section{The Power Exponentiated Lindley (PEL) distribution}
+
+The Power Exponentiated Lindley (PEL) distribution is introduced in Rajitha and Akhilnath\supercite{Rajitha2022} uses the single parameter Lindley distribution as the base distirbution. The cdf and pdf are given <ref> for $x>0$ and $\theta>0$ as
+
+\begin{equation}
+G\left(x\right) = 1 - \frac{1+\theta + \theta x}{1+\theta}\exp\left(-\theta x\right)
+\end{equation}
+
+and
+
+\begin{equation}
+g\left(x\right) = \frac{ \theta^2 }{1+\theta} \left(1+x\right)\exp\left(-\theta x\right)
+\end{equation}
+
+The quantile function on the Lindley distribution is expressed using $W_{-1}$ to denote the negative branch of the Lambert W function as <ref>
+
+\begin{equation}
+Q\left(z\right) = -1 - \frac{1}{\theta} - \frac{1}{\theta}W_{-1}\left( \left(1+\theta\right)\left(z-1\right)\exp\left(-1-\theta\right)\right)
+\end{equation}
+
+The gradient terms required for the derivatives of the log likelihood function are given by
+\begin{equation}
+\frac{\partial}{\partial \theta} G\left(x\right) = \left( \frac{1}{\left(1+\theta\right)^{2}} - \frac{1+\theta + \theta x}{1+\theta}\right) x \exp\left(-\theta x\right)
+\end{equation}
+
+and
+
+\begin{equation}
+\frac{\partial}{\partial \theta} \log \left( g\left(x\right) \right) = \frac{2}{\theta} - \frac{1}{1+\theta} -x
+\end{equation}
 
 
 
+\section{Simulation Study}
+\label{sec:sim}
+## - negative branch of lambert W function is?? Which implimentation have they used?? Current code uses lamW package
+## - what happens as v --> 1. At the moment set to fail in code to match paper. This will make ML optimisation interesting - not addressed in paper
+## - what happens to CDF and pdf as x-->0
+## - Paper indicates ML estimation done in R by setting gradients to 0 - suspect given Newton-Raphlson step mentioned that actually done using one of the base R optimiser to minimising log likelihood using gradients
+## - log-likelihood given in paper can;t be evaluated for v<1
+## - lim v->1 log(v)/(v-1) =1
+## - 
+
+
+
+
+
+
+\subsubsection{refsto add}
+
+Lindley Distribtuon formulas
+
+Ghitany, M. E., Atieh, B., Nadarajah, S., (2008). Lindley distribution and its application. Mathematics and Computers in Simulation, 78, 4, 49-506.
+Jodra, P., (2010). Computer generation of random variables with Lindley or Poisson-Lindley distribution via the Lambert W function. Mathematics and Computers in Simulation, 81, (4), 851-859.
 
 
 Three years, we launched ReScience, a new scientific journal aimed at publishing the
