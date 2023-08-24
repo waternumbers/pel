@@ -2,7 +2,210 @@
 %\VignetteIndexEntry{Article}
 \begin{document}
 \input{header.tex}
-\input{content.tex}
+
+
+\section{Introduction}
+
+The paper of \citet{Rajitha2022} introduces the Power Exponentiated Lindley (PEL) distribution based upon the Power Exponentiated Family of distribution given in \cite{Modi2021}.
+This paper replicates, as far as is possible, the simulation study and analysis of COVID data presented in \cite{Rajitha2022}.
+
+Section~\ref{sec:pel} of this paper presents the PEL distribution and a scheme for maximum likelihood estimation scheme based on \cite{Rajitha2022} in a manner that adresses some of shortcomings found during replication.
+
+In \cite{Rajitha2022} the estimation scheme is tested in a simulation study, which is replicated in Section~\ref{sec:sim}.
+Section~\ref{sec:covid} replicates the fitting of the PEL distribution to a number of COVID data sets as presented in Section~6 of \cite{Rajitha2022}.
+
+\section{The Power Exponentiated Lindley Distribution}
+
+For a random variable $X$ the PEF transforms a base distribution to a new valid probability distribution <ref>. Let a base distributions have a cumulative distribution function (cdf) $G\left(x\right)$ and density $g\left(x\right)$ dependent upon parameters $\theta$. Using two shape parameters $a$ and $v$ the Power Exponentiated cdf is given by
+
+\begin{equation}
+  F\left(x\right) = \left\{
+    \begin{array}{cl}
+      \frac{ v^{G\left(x\right)^{a}} - 1 }{v-1} & a>0,v>0,v\neq1\\
+      G\left(x\right)^{a} & a>0,v=1\\
+    \end{array}
+    \right.
+\end{equation}
+
+and pdf by
+
+\begin{equation}
+  f\left(x\right) = \left\{
+    \begin{array}{cl}
+      \frac{ a v^{G\left(x\right)^{a}} \log\left(v\right) G\left(x\right)^{a-1}g\left(x\right)}{v-1} & x>0,a>0,q>0,v>0,v\neq1\\
+      aG\left(x\right)^{a-1}g\left(x\right) & a>0,v=1\\
+    \end{array}
+    \right.
+\end{equation}
+
+The quantile function, finding $x$ such that for $0 \leq z \leq 1$ $F\left(x\right) = z$ is formulated in terms of the cdf of the base distribution as
+
+\begin{equation}
+  G\left(x\right) = \left\{
+    \begin{array}{cl}
+      \left( \frac{ \log\left(1-z-zv\right) }{ \log v} \right)^{\frac{1}{a}} & a>0,v>0,v\neq1\\
+      z^{\frac{1}{a}} & a>0,v=1\\
+    \end{array}
+    \right.
+\end{equation}
+
+
+The PEL distribution uses the single parameter Lindley distribution as the base distirbution. The cdf and pdf of the Lindley distribtuion are given \cite{Ghitany2008} for $x>0$ and $\theta>0$ as
+
+\begin{equation}
+G\left(x\right) = 1 - \frac{1+\theta + \theta x}{1+\theta}\exp\left(-\theta x\right)
+\end{equation}
+
+and
+
+\begin{equation}
+g\left(x\right) = \frac{ \theta^2 }{1+\theta} \left(1+x\right)\exp\left(-\theta x\right)
+\end{equation}
+
+The quantile function on the Lindley distribution is expressed using $W_{-1}$ to denote the negative branch of the Lambert W function \cite{Jodra2010} as
+
+\begin{equation}
+Q\left(z\right) = -1 - \frac{1}{\theta} - \frac{1}{\theta}W_{-1}\left( \left(1+\theta\right)\left(z-1\right)\exp\left(-1-\theta\right)\right)
+\end{equation}
+
+\subsection{Maximum Likelihood estimation}
+
+Given a sample of data $\mathbf{x} = \left(x_{1},x_{2},\ldots,x_{n}\right)$ the log likelihood can be written as
+
+\begin{equation}
+\label{eq:loglike}
+  l\left(\mathbf{x}\right) = \left\{
+  \begin{array}{cl}
+    n\log\left(a\right) + \log\left(v\right) \sum G\left(x\right)^{a}
+    + \left(a-1\right) \sum \log\left(G\left(x\right)\right)
+    + \sum \log\left(g\left(x\right)\right) + n\log\left(\frac{\log v}{v-1}\right) & a>0,v>0,v\neq1\\
+    n\log\left(a\right) + \left(a-1\right)\sum \log\left(G\left(x\right)\right)
+    + \sum \log\left(g\left(x\right)\right) & a>0,v=1\\
+    \end{array}
+    \right.
+\end{equation}
+
+The gradient of log-likelihood with respect to $a$ and $v$ is readily computed as
+
+\begin{equation}
+\frac{\partial l}{\partial a} = \frac{n}{a} + \sum \log\left(G\left(x\right)\right) +
+\log\left(v\right) \sum G\left(x\right)^{a}\log\left(G\left(x\right)\right)
+\end{equation}
+
+and
+
+\begin{equation}
+  \frac{\partial l}{\partial v} = \left\{
+  \begin{array}{cl}          
+  \frac{1}{v}\left( \sum G\left(x\right)^{a} +n \left(\frac{1}{\log{v}} - \frac{v}{v-1}\right)\right) & a>0,v>0,v\neq1\\
+  \sum G\left(x\right)^{a} - \frac{n}{2} & a>0,v=1\\
+    \end{array}            
+    \right.
+\end{equation}
+
+The gradient with respect to the parameter of the base distribution takes the form
+
+\begin{equation}
+\frac{\partial l}{\partial \theta} =
+\sum \left( \left( \log\left(v\right)a G\left(x\right)^{a-1} + \frac{a-1}{G\left(x\right)}\right)
+\frac{\partial }{\partial \theta} G\left(x\right)\right) +
+\frac{\partial }{\partial \theta} \sum \log\left(g\left(\right)\right)
+\end{equation}
+
+
+The gradient terms required for the derivatives of the log likelihood function are given by
+\begin{equation}
+\frac{\partial}{\partial \theta} G\left(x\right) = \left( \frac{1+\theta + \theta x}{1+\theta} - \frac{1}{\left(1+\theta\right)^{2}}\right) x \exp\left(-\theta x\right)
+\end{equation}
+
+and
+
+\begin{equation}
+\frac{\partial}{\partial \theta} \log \left( g\left(x\right) \right) = \frac{2}{\theta} - \frac{1}{1+\theta} -x
+\end{equation}
+
+\subsection{Differences in formulation}
+
+These formulea differ from those given in \cite{Rajitha2002} by improving the evaluation with respect to the shape paremeter $v$; specifically
+
+\begin{itemize}
+  \item {Handling the case of $v=1$; the results for which are derived from the limit
+    \begin{equation}
+      \lim_{\eta \rightarrow 1} \frac{\eta^\beta -1}{\eta-1} = \beta
+    \end{equation}
+  }
+  \item Ensuring individual terms within the formulea can be evaluated for $v<1$ by not simplifying $\log\left(\frac{\log v}{v-1}\right)$ in (\ref{eq:loglike}).
+\end{itemize}
+
+\section{Simulation Study}
+\label{sec:sim}
+
+\begin{itemize}
+\item{negative branch of lambert W function is?? Which implimentation have they used?? Current code uses lamW package}
+\item{what happens as v --> 1. At the moment set to fail in code to match paper. This will make ML optimisation interesting - not addressed in paper}
+\item{what happens to CDF and pdf as x-->0}
+\item{Paper indicates ML estimation done in R by setting gradients to 0 - suspect given Newton-Raphlson step mentioned that actually done using one of the base R optimiser to minimising log likelihood using gradients}
+\item{log-likelihood given in paper can;t be evaluated for v<1}
+\item{lim v->1 log(v)/(v-1) =1}
+\end{itemize}
+
+<<results=tex, echo = FALSE>>=
+set.seed(72843)
+fivenum(rnorm(1000))
+@
+
+\section{Analysis of Covid Data}
+\label{sec:covid}
+
+Data set 1: The data represent the COVID-19 case fatality
+ratio (in \%) of China, from 8th March to 1st April of year
+2022 due to new variant of COVID-19 (stealth omicron).
+The data is collected from official site of World Health Orga-
+nization (WHO) [https://covid19.who.int/]. The data are as
+follows:
+1.09, 1.00, 1.08, 1.12, 1.50, 1.60, 1.77, 1.81, 2.07, 1.75, 2.58,
+2.59, 2.65, 3.09, 3.20, 3.47, 3.21, 2.77, 3.17, 2.65, 3.00, 3.61,
+3.08, 2.70, 2.41.
+
+
+Data set 2: The data represent the case fatality ratio (in %)
+of India, from 1st February to 1st April of year 2022 due
+to COVID-19. Covid cases in India started decreasing from
+February of 2022. The data is collected from official site
+of World Health Organization (WHO) [https://covid19.who.
+int/]. The data are as follows:
+
+
+Data set 3: The data represent the count of new cases of
+COVID-19 reported in capital city of India from 11th of
+March 2022 to 11th of April 2022. Data is collected from
+JHU CSSE COVID-19 data (https://github.com/CSSEGISand
+Data/COVID-19). Dataset is:
+174, 161, 132, 136, 131, 144, 148, 140, 127, 122, 108, 104,
+132, 111, 112, 120, 71, 90, 95, 123, 113, 131, 114, 85, 82,
+112, 126, 176, 146, 160, 141, 137
+
+<<>>=
+ds1 <- c(1.09, 1.00, 1.08, 1.12, 1.50, 1.60, 1.77, 1.81, 2.07, 1.75, 2.58,
+         2.59, 2.65, 3.09, 3.20, 3.47, 3.21, 2.77, 3.17, 2.65, 3.00, 3.61,
+         3.08, 2.70, 2.41)
+#fit1 <- fitPEL(ds1)
+ds2 <- c(1.067, 1.757, 1.705, 1.849, 1.131, 1.595, 1.524, 1.014, 1.266,
+         1.678, 1.758, 1.898, 1.459, 3.370, 1.283, 1.753, 1.840, 2.134,
+         2.293, 2.217, 2.365, 1.485, 2.603, 2.952, 2.164, 3.142, 4.880,
+         2.885, 1.513, 2.704, 3.169, 2.485, 6.080, 2.462, 1.508, 1.078,
+         3.777, 3.407, 2.363, 5.893, 3.421, 7.211, 2.001, 2.087, 3.487,
+         3.457, 4.925, 2.469, 10.48, 2.514, 2.779, 2.514, 2.285, 3.895)
+#fit2 <- fitPEL(ds2)
+ds3 <- c(174, 161, 132, 136, 131, 144, 148, 140, 127, 122, 108, 104,
+         132, 111, 112, 120, 71, 90, 95, 123, 113, 131, 114, 85, 82,
+         112, 126, 176, 146, 160, 141, 137)
+#fit3 <- fitPEL(ds3)
+@ 
+
+
+
+%%\input{content.Rnw}
 
 \hypersetup{linkcolor=black,urlcolor=darkgray}
 \renewcommand\emph[1]{{\bfseries #1}}

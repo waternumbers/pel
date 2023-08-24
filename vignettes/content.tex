@@ -1,13 +1,15 @@
+\section{Introduction}
+
 The paper of Rajitha and Akhilnath\supercite{Rajitha2022} introduces the Power Exponentiated Lindley (PEL) distribution based upon the Power Exponentiated Family of distribution given in Modi\supercite{Modi}.
+This paper reproduces, as far as is possible, the simulation study and analysis of COVID <??> data presented in \supercite{Rajitha2022}.
 
-Rajitha and Akhilnath\supercite{Rajitha2022} provide various properties of the distribution, such as the moments, and outline a numerical scheme to find the Maximum Likelihood parameter estimates given a sample of data. This scheme is tested in a simulation study, which is replicated in Section~\ref{sec:sim}. Section <??> of Rajitha and Akhilnath\supercite{Rajitha2022} compares the fit of the PEL distribution to a number of others on a number of COVID data sets. This exercise is repeated in Section~\ref{sec:covid}.
+Rajitha and Akhilnath\supercite{Rajitha2022} provide various properties of the PEL distribution, such as the moments, and outline a numerical scheme to find the Maximum Likelihood parameter estimates given a sample of data. Section~\ref{sec:method} of this paper presents an altered maximum likelihood estimation scheme which adresses some of shortcomings found while reproducing the simulation results.
 
-This paper first reviews the derivation of the PEL distribution and maximum likelihood estimates.
+In \supercite{Rajitha2022} the estimation scheme is tested in a simulation study, which is replicated in Section~\ref{sec:sim}. Section <??> of Rajitha and Akhilnath\supercite{Rajitha2022} compares the fit of the PEL distribution to a number of others on a number of COVID data sets. This exercise is repeated in Section~\ref{sec:covid}.
 
+\section{The Power Exponentiated Lindley Distribution}
 
-\section{The Power Exponentiated Family}
-
-The Power Exponentiated Lindley (PEL) distribution introduced in Rajitha and Akhilnath\supercite{Rajitha2022} is based on the Power Exponentiated family of Modi\supercite{Modi}. For a random variable $X$ the Power Exponentiated family transforms a base distribution to a new valid probability distribution. Let a base distributions have a cumulative distribution function (cdf) $G\left(x\right)$ and density $g\left(x\right)$ dependent upon parameters $\theta$. Using two shape parameters $a$ and $v$ the Power Exponentiated cumulative distribution fuction is given by
+For a random variable $X$ the PEF transforms a base distribution to a new valid probability distribution <ref>. Let a base distributions have a cumulative distribution function (cdf) $G\left(x\right)$ and density $g\left(x\right)$ dependent upon parameters $\theta$. Using two shape parameters $a$ and $v$ the Power Exponentiated cdf is given by
 
 \begin{equation}
   F\left(x\right) = \left\{
@@ -18,7 +20,7 @@ The Power Exponentiated Lindley (PEL) distribution introduced in Rajitha and Akh
     \right.
 \end{equation}
 
-and the density
+and pdf by
 
 \begin{equation}
   f\left(x\right) = \left\{
@@ -40,11 +42,25 @@ The quantile function, finding $x$ such that $F\left(x\right) = z$ is formulated
     \right.
 \end{equation}
 
-These formulea differ from those given in Rajitha and Akhilnath\supercite{Rajitha2002} by handling the case of $v=1$; the results for which are derived from the limit
+
+The PEL distribution uses the single parameter Lindley distribution as the base distirbution. The cdf and pdf of the Lindley distribtuion are given ?? for $x>0$ and $\theta>0$ as
 
 \begin{equation}
-  \lim_{\eta \rightarrow 1} \frac{\eta^\beta -1}{\eta-1} = \beta
+G\left(x\right) = 1 - \frac{1+\theta + \theta x}{1+\theta}\exp\left(-\theta x\right)
 \end{equation}
+
+and
+
+\begin{equation}
+g\left(x\right) = \frac{ \theta^2 }{1+\theta} \left(1+x\right)\exp\left(-\theta x\right)
+\end{equation}
+
+The quantile function on the Lindley distribution is expressed using $W_{-1}$ to denote the negative branch of the Lambert W function as ??
+
+\begin{equation}
+Q\left(z\right) = -1 - \frac{1}{\theta} - \frac{1}{\theta}W_{-1}\left( \left(1+\theta\right)\left(z-1\right)\exp\left(-1-\theta\right)\right)
+\end{equation}
+
 
 \subsection{Maximum Likelihood estimation}
 
@@ -75,7 +91,7 @@ and
 \begin{equation}
   \frac{\partial l}{\partial v} = \left\{
   \begin{array}{cl}          
-  \frac{1}{v}\left( \sum G\left(x\right)^{a} +n \left(\frac{1}{\log{v}} + \frac{v}{v-1}\right)\right) & a>0,v>0,v\neq1\\
+  \frac{1}{v}\left( \sum G\left(x\right)^{a} +n \left(\frac{1}{\log{v}} - \frac{v}{v-1}\right)\right) & a>0,v>0,v\neq1\\
   \sum G\left(x\right)^{a} - \frac{n}{2} & a>0,v=1\\
     \end{array}            
     \right.
@@ -90,32 +106,10 @@ The gradient with respect to the parameter of the base distribution takes the fo
 \frac{\partial }{\partial \theta} \sum \log\left(g\left(\right)\right)
 \end{equation}
 
-In contrast to the formulea given in Rajitha and Akhilnath\supercite{Rajitha2022} these handle the case $v=1$. Care has also been taken to ensure the individuals terms within the formulea can be evaluated for $v<1$ by not simplifying $\log\left(\frac{\log v}{v-1}\right)$ in (\ref{eq:loglike}).
-
-
-\section{The Power Exponentiated Lindley (PEL) distribution}
-
-The Power Exponentiated Lindley (PEL) distribution is introduced in Rajitha and Akhilnath\supercite{Rajitha2022} uses the single parameter Lindley distribution as the base distirbution. The cdf and pdf are given <ref> for $x>0$ and $\theta>0$ as
-
-\begin{equation}
-G\left(x\right) = 1 - \frac{1+\theta + \theta x}{1+\theta}\exp\left(-\theta x\right)
-\end{equation}
-
-and
-
-\begin{equation}
-g\left(x\right) = \frac{ \theta^2 }{1+\theta} \left(1+x\right)\exp\left(-\theta x\right)
-\end{equation}
-
-The quantile function on the Lindley distribution is expressed using $W_{-1}$ to denote the negative branch of the Lambert W function as <ref>
-
-\begin{equation}
-Q\left(z\right) = -1 - \frac{1}{\theta} - \frac{1}{\theta}W_{-1}\left( \left(1+\theta\right)\left(z-1\right)\exp\left(-1-\theta\right)\right)
-\end{equation}
 
 The gradient terms required for the derivatives of the log likelihood function are given by
 \begin{equation}
-\frac{\partial}{\partial \theta} G\left(x\right) = \left( \frac{1}{\left(1+\theta\right)^{2}} - \frac{1+\theta + \theta x}{1+\theta}\right) x \exp\left(-\theta x\right)
+\frac{\partial}{\partial \theta} G\left(x\right) = \left( \frac{1+\theta + \theta x}{1+\theta} - \frac{1}{\left(1+\theta\right)^{2}}\right) x \exp\left(-\theta x\right)
 \end{equation}
 
 and
@@ -124,17 +118,38 @@ and
 \frac{\partial}{\partial \theta} \log \left( g\left(x\right) \right) = \frac{2}{\theta} - \frac{1}{1+\theta} -x
 \end{equation}
 
+\subsection{Differences in formulation}
+
+These formulea differ from those given in Rajitha and Akhilnath\supercite{Rajitha2002} by handling the case of $v=1$; the results for which are derived from the limit
+
+\begin{equation}
+  \lim_{\eta \rightarrow 1} \frac{\eta^\beta -1}{\eta-1} = \beta
+\end{equation}
+
+
+In contrast to the formulea given in Rajitha and Akhilnath\supercite{Rajitha2022} these handle the case $v=1$. Care has also been taken to ensure the individuals terms within the formulea can be evaluated for $v<1$ by not simplifying $\log\left(\frac{\log v}{v-1}\right)$ in (\ref{eq:loglike}).
 
 
 \section{Simulation Study}
 \label{sec:sim}
-## - negative branch of lambert W function is?? Which implimentation have they used?? Current code uses lamW package
-## - what happens as v --> 1. At the moment set to fail in code to match paper. This will make ML optimisation interesting - not addressed in paper
-## - what happens to CDF and pdf as x-->0
-## - Paper indicates ML estimation done in R by setting gradients to 0 - suspect given Newton-Raphlson step mentioned that actually done using one of the base R optimiser to minimising log likelihood using gradients
-## - log-likelihood given in paper can;t be evaluated for v<1
-## - lim v->1 log(v)/(v-1) =1
-## - 
+
+<<>>=
+set.seed(72843)
+a
+
+@
+
+
+
+
+\begin{itemize}
+\item{negative branch of lambert W function is?? Which implimentation have they used?? Current code uses lamW package}
+\item{what happens as v --> 1. At the moment set to fail in code to match paper. This will make ML optimisation interesting - not addressed in paper}
+\item{what happens to CDF and pdf as x-->0}
+\item{Paper indicates ML estimation done in R by setting gradients to 0 - suspect given Newton-Raphlson step mentioned that actually done using one of the base R optimiser to minimising log likelihood using gradients}
+\item{log-likelihood given in paper can;t be evaluated for v<1}
+\item{lim v->1 log(v)/(v-1) =1}
+\end{itemize}
 
 
 
