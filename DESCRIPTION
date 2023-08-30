@@ -14,4 +14,4 @@ License: GPL-3
 Encoding: UTF-8
 Imports: lamW
 Suggests: tinytest
-RoxygenNote: 7.2.3
+LazyData: true

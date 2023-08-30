@@ -3,20 +3,21 @@
 \begin{document}
 \input{header.tex}
 
-
+<<<echo=FALSE>>=
+library(pel)
+@ 
 \section{Introduction}
 
-The paper of \citet{Rajitha2022} introduces the Power Exponentiated Lindley (PEL) distribution based upon the Power Exponentiated Family of distribution given in \cite{Modi2021}.
-This paper replicates, as far as is possible, the simulation study and analysis of COVID data presented in \cite{Rajitha2022}.
-
-Section~\ref{sec:pel} of this paper presents the PEL distribution and a scheme for maximum likelihood estimation scheme based on \cite{Rajitha2022} in a manner that adresses some of shortcomings found during replication.
+The paper of \citet{Rajitha2022} introduces the Power Exponentiated Lindley (PEL) distribution based upon the Power Exponentiated Family of distributions given in \cite{Modi2021} giving numerous analytical formulea for the properties of the distribution.
+In Section~\ref{sec:pel} of this work the PEL distribution and a maximum likelihood estimation scheme based on \cite{Rajitha2022} are presented with alterations that address shortcomings found during the replication.
 
 In \cite{Rajitha2022} the estimation scheme is tested in a simulation study, which is replicated in Section~\ref{sec:sim}.
-Section~\ref{sec:covid} replicates the fitting of the PEL distribution to a number of COVID data sets as presented in Section~6 of \cite{Rajitha2022}.
+Section~\ref{sec:covid} replicates the fitting of the PEL distribution to a number of COVID data sets as presented in Section~6 of \cite{Rajitha2022}. A summary of the replicability of \cite{Rajitha2022} can be found in the conclusions.
 
 \section{The Power Exponentiated Lindley Distribution}
+\label{sec:pel}
 
-For a random variable $X$ the PEF transforms a base distribution to a new valid probability distribution <ref>. Let a base distributions have a cumulative distribution function (cdf) $G\left(x\right)$ and density $g\left(x\right)$ dependent upon parameters $\theta$. Using two shape parameters $a$ and $v$ the Power Exponentiated cdf is given by
+For a random variable $X$ the Power Exponentiated Family transforms a base distribution to a new valid probability distribution \cite{Modi2021}. Let a base distributions have a cumulative distribution function (cdf) $G\left(x\right)$ and probability density function $g\left(x\right)$ dependent upon parameters $\theta$. Using two shape parameters $a$ and $v$ the Power Exponentiated cdf is given by
 
 \begin{equation}
   F\left(x\right) = \left\{
@@ -38,7 +39,7 @@ and pdf by
     \right.
 \end{equation}
 
-The quantile function, finding $x$ such that for $0 \leq z \leq 1$ $F\left(x\right) = z$ is formulated in terms of the cdf of the base distribution as
+The quantile function $F^{-1}\left(z\right)$ which returns $x$ such that $F\left(x\right) = z$ for $0 \leq z \leq 1$ is formulated in terms of the quantile function of the base distribution since
 
 \begin{equation}
   G\left(x\right) = \left\{
@@ -48,7 +49,6 @@ The quantile function, finding $x$ such that for $0 \leq z \leq 1$ $F\left(x\rig
     \end{array}
     \right.
 \end{equation}
-
 
 The PEL distribution uses the single parameter Lindley distribution as the base distirbution. The cdf and pdf of the Lindley distribtuion are given \cite{Ghitany2008} for $x>0$ and $\theta>0$ as
 
@@ -65,8 +65,106 @@ g\left(x\right) = \frac{ \theta^2 }{1+\theta} \left(1+x\right)\exp\left(-\theta 
 The quantile function on the Lindley distribution is expressed using $W_{-1}$ to denote the negative branch of the Lambert W function \cite{Jodra2010} as
 
 \begin{equation}
-Q\left(z\right) = -1 - \frac{1}{\theta} - \frac{1}{\theta}W_{-1}\left( \left(1+\theta\right)\left(z-1\right)\exp\left(-1-\theta\right)\right)
+G^{-1}\left(z\right) = -1 - \frac{1}{\theta} - \frac{1}{\theta}W_{-1}\left( \left(1+\theta\right)\left(z-1\right)\exp\left(-1-\theta\right)\right)
 \end{equation}
+
+
+\subsection{Differences in formulation}
+
+The formulation of the PEL distribution differs from that given in \cite{Rajitha2022} by including the the case of $v=1$; the results for which are derived from the limit
+\begin{equation}
+  \lim_{\eta \rightarrow 1} \frac{\eta^\beta -1}{\eta-1} = \beta
+\end{equation}.
+
+\subsection{Replication of PEL plots}
+
+Figure~\ref{fig:pdf} and Figure~\ref{fig:cdf} show the pdf and cdf of the PEL distribution. Visual comparision to Figure~1 and Figure~2 of \cite{Rajitha2022} which they replicate indicate a high degree of correspondance for the cdf values, while the pdf values are approximately twice those in \cite{Rajitha2022}.
+
+\begin{figure}
+  \centering
+<<echo=FALSE, width=9,height=3,fig=TRUE>>=
+## visual plots for comparision with paper
+layout(matrix(1:3,1,3))
+x <- seq(0,6,length=1000)
+Y <- cbind( dpel(x,2,2,0.5), dpel(x,2,2,1), dpel(x,2,2,2), dpel(x,2,2,5) )
+matplot(x,Y,type="l",lty=1,col=c("black","green","red","blue"))
+legend("topright",c(expression(paste("a=2, v=2, ",theta,"=0.5")),
+                    expression(paste("a=2, v=2, ",theta,"=1")),
+                    expression(paste("a=2, v=2, ",theta,"=2")),
+                    expression(paste("a=2, v=2, ",theta,"=5"))),
+       col=c("black","green","red","blue"),lty=1)
+
+Y <- cbind( dpel(x,2,0.5,2), dpel(x,2,1.1,2), dpel(x,2,2,2), dpel(x,2,5,2) )
+matplot(x,Y,type="l",lty=1,col=c("black","green","red","blue"))
+legend("topright",c(expression(paste("a=2, v=0.5, ",theta,"=2")),
+                    expression(paste("a=2, v=1.1, ",theta,"=2")),
+                    expression(paste("a=2, v=2, ",theta,"=2")),
+                    expression(paste("a=2, v=5, ",theta,"=2"))),
+       col=c("black","green","red","blue"),lty=1)
+
+Y <- cbind( dpel(x,0.8,2,2), dpel(x,1,2,2), dpel(x,2,2,2), dpel(x,5,2,2) )
+matplot(x,Y,type="l",lty=1,col=c("black","green","red","blue"))
+legend("topright",c(expression(paste("a=0.8, v=2, ",theta,"=2")),
+                    expression(paste("a=1, v=2, ",theta,"=2")),
+                    expression(paste("a=2, v=2, ",theta,"=2")),
+                    expression(paste("a=5, v=2, ",theta,"=2"))),
+       col=c("black","green","red","blue"),lty=1)
+@
+\caption{Plots of the pdf of the PEL distribution. These replicate Figure~1 of \cite{Rajitha2022} and display a simialr shape but markedly different density values.}
+\label{fig:pdf}
+\end{figure}
+
+\begin{figure}
+  \centering
+<<echo=FALSE, width=9,height=3,fig=TRUE>>=
+## visual plots for comparision with paper
+layout(matrix(1:3,1,3))
+x <- seq(0,10,length=1000)
+Y <- cbind( ppel(x,2,2,0.5), ppel(x,2,2,1), ppel(x,2,2,2), ppel(x,2,2,5) )
+matplot(x,Y,type="l",lty=1,col=c("black","green","red","blue"))
+legend("bottomright",c(expression(paste("a=2, v=2, ",theta,"=0.5")),
+                    expression(paste("a=2, v=2, ",theta,"=1")),
+                    expression(paste("a=2, v=2, ",theta,"=2")),
+                    expression(paste("a=2, v=2, ",theta,"=5"))),
+       col=c("black","green","red","blue"),lty=1)
+
+x <- seq(0,5,length=1000)
+Y <- cbind( ppel(x,2,0.5,2), ppel(x,2,1.1,2), ppel(x,2,2,2), ppel(x,2,5,2) )
+matplot(x,Y,type="l",lty=1,col=c("black","green","red","blue"))
+legend("bottomright",c(expression(paste("a=2, v=0.5, ",theta,"=2")),
+                    expression(paste("a=2, v=1.1, ",theta,"=2")),
+                    expression(paste("a=2, v=2, ",theta,"=2")),
+                    expression(paste("a=2, v=5, ",theta,"=2"))),
+       col=c("black","green","red","blue"),lty=1)
+
+Y <- cbind( ppel(x,0.8,2,2), ppel(x,1,2,2), ppel(x,2,2,2), ppel(x,5,2,2) )
+matplot(x,Y,type="l",lty=1,col=c("black","green","red","blue"))
+legend("bottomright",c(expression(paste("a=0.8, v=2, ",theta,"=2")),
+                    expression(paste("a=1, v=2, ",theta,"=2")),
+                    expression(paste("a=2, v=2, ",theta,"=2")),
+                    expression(paste("a=5, v=2, ",theta,"=2"))),
+       col=c("black","green","red","blue"),lty=1)
+@
+\caption{Plots of the cdf of the PEL distribution. These replicate Figure~2 of \cite{Rajitha2022} to which they are visually similar.}
+\label{fig:cdf}
+\end{figure}
+
+
+
+
+This provides a continous range for $v$ which aids the numerical optimisation used in maximum likihood estimation (see Sections~\ref{sec:sim}). 
+
+
+Ensuring individual terms within the formulea can be evaluated for $v<1$ by not simplifying $\log\left(\frac{\log v}{v-1}\right)$ in (\ref{eq:loglike}).
+
+
+\section{Simulation Study}
+\label{sec:sim}
+
+
+
+
+
 
 \subsection{Maximum Likelihood estimation}
 
@@ -124,21 +222,6 @@ and
 \frac{\partial}{\partial \theta} \log \left( g\left(x\right) \right) = \frac{2}{\theta} - \frac{1}{1+\theta} -x
 \end{equation}
 
-\subsection{Differences in formulation}
-
-These formulea differ from those given in \cite{Rajitha2002} by improving the evaluation with respect to the shape paremeter $v$; specifically
-
-\begin{itemize}
-  \item {Handling the case of $v=1$; the results for which are derived from the limit
-    \begin{equation}
-      \lim_{\eta \rightarrow 1} \frac{\eta^\beta -1}{\eta-1} = \beta
-    \end{equation}
-  }
-  \item Ensuring individual terms within the formulea can be evaluated for $v<1$ by not simplifying $\log\left(\frac{\log v}{v-1}\right)$ in (\ref{eq:loglike}).
-\end{itemize}
-
-\section{Simulation Study}
-\label{sec:sim}
 
 \begin{itemize}
 \item{negative branch of lambert W function is?? Which implimentation have they used?? Current code uses lamW package}

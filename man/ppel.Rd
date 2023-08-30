@@ -14,19 +14,19 @@
   and standard deviation equal to ‘sd’.
 }
 \usage{
-dpel(x, a, q, v, log=FALSE)
-ppel(x, a, q, v, lower.tail = TRUE, log.p = FALSE)
-qpel(u, a, q, v, lower.tail = TRUE, log.p = FALSE)
-rpel(n, a, q, v)
+dpel(x, a, v, theta, log=FALSE)
+ppel(x, a, v, theta, lower.tail = TRUE, log.p = FALSE)
+qpel(q, a, v, theta, lower.tail = TRUE, log.p = FALSE)
+rpel(n, a, v, theta)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{x}{vector of quantiles.}
-  \item{u}{vector of probabilities.}
+  \item{q}{vector of probabilities.}
   \item{n}{number of observations. If ‘length(n) > 1’, the length is
           taken to be the number required.}
   \item{a}{ TODO }
-  \item{q}{ TODO }
+  \item{theta}{ TODO }
   \item{v}{ TODO }
   \item{log, log.p}{logical; if TRUE, probabilities p are given as
     log(p).}
@@ -90,7 +90,7 @@ xx <- qpel(Dx,1,2,5)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory (show via RShowDoc("KEYWORDS")):
-% \keyword{ ~kwd1 }
+\keyword{ distribution }
 % \keyword{ ~kwd2 }
 % Use only one keyword per line.
 % For non-standard keywords, use \concept instead of \keyword:

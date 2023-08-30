@@ -1,0 +1,4 @@
+1. Check documentation
+2. For lazy loadDB size warning try looking at https://cran.r-project.org/doc/manuals/R-exts.html#Data-in-packages - will need package to build cleanly first
+3. rest of paper
+4. tests as tests!
