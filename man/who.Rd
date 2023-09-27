@@ -26,5 +26,5 @@ further details on the calculation of new cases/deaths.
 \source{WHO. Download from
   \url{https://covid19.who.int/WHO-COVID-19-global-data.csv} at
   2023-08-30 15:30 UTC.}
-\references{}
+%% \references{}
 \keyword{datasets}

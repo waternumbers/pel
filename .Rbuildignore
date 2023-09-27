@@ -1,2 +1,10 @@
-^doc$
-^Meta$
+$.git$
+.Rhistory
+^docs$
+^cran-comments\.md$ # Comments for CRAN submission
+^\.travis\.yml$
+^appveyor\.yml$
+^build_scripts$
+^prebuilt$
+^\.github$
+^raw_datasets$

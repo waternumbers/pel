@@ -20,7 +20,9 @@ plind <- function(x,theta, lower.tail = TRUE, log.p = FALSE){
               "theta should be >= 0" = all(theta>0))
     
     Gx <- 1 - (exp(-theta*x)*(1+theta+theta*x)/(1+theta))
-
+    
+    Gx[x==Inf] <- 1
+    
     if( !lower.tail ){ Gx <- 1-Gx }
     if( log.p ){ Gx <- log(Gx) }
     return( Gx )
@@ -35,6 +37,7 @@ qlind <- function(q,theta, lower.tail = TRUE, log.p = FALSE){
 
     ## work out the value of Gx
     x <- -1 - (1/theta) - (1/theta)*lamW::lambertWm1( (1+theta)*(q-1)*exp(-1-theta) )
+    x[q==0] <- 0
     return( x )
 }
 

@@ -1,12 +1,47 @@
 ## some simple tests on the lindley distribution
 
-x <- seq(0,10,length=1000)
+## test silent running
+expect_silent({
+    theta <- 4
+    x <- rlind(10,theta)
+    d <- dlind(x,theta)
+    p <- plind(x,theta)
+    q <- qlind(p,theta)
+})
 
+expect_error( x <- rlind(10,-1) )
+expect_error( x <- dlind(10,-1) )
+expect_error( x <- plind(10,-1) )
+expect_error( x <- qlind(0.7,-1) )
+
+expect_error( x <- rlind(-10,1) )
+expect_error( x <- dlind(-10,1) )
+expect_error( x <- plind(-10,1) )
+expect_error( x <- qlind(-0.7,1) )
+expect_error( x <- qlind(7,1) )
+
+## generate data to test against
 theta <- 5
+z <- seq(0,1,length=100) ## cdf values
+x <- qlind(z,theta) ## evaluation of r.v. at those values
 
-d <- dlind(x,theta)
-dd <- dlind(x,theta,log=TRUE)
-expect_equal(d,exp(dd))
+## log density
+expect_equal( dlind(x,theta), exp(dlind(x,theta,log=TRUE)) )
+
+## reversability of ppel & qpel
+expect_equal( z, plind(x,theta) )
+expect_equal( 1-z, plind(x,theta,lower.tail=F) )
+
+expect_equal( x, qlind(log(z),theta,log.p=T) )
+expect_equal( log(z), plind(x,theta,log.p=T) )
+
+expect_equal( x, qlind(log(1-z),theta,log.p=T,lower.tail=F) )
+expect_equal( log(1-z), plind(x,theta,log.p=T,lower.tail=F) )
+
+
+
+
+
 
 ## ddd <- VGAM::dlind(x,theta)
 ## range(d-ddd)
@@ -30,24 +65,6 @@ expect_equal(d,exp(dd))
 
 
 
-## reversability
-px <- plind(x,theta)
-xx <- qlind(px,theta)
-expect_equal(x,xx)
-## this isn't great exp in the upper tail - is it down to lamW function, seems more significant on tails??
-
-px <- plind(x,theta,lower.tail=F)
-xx <- qlind(px,theta,lower.tail=F)
-expect_equal(x,xx)
-
-px <- plind(x,theta,lower.tail=F, log.p=T)
-xx <- qlind(px,theta,lower.tail=F,log.p=T)
-expect_equal(x,xx)
-
-px <- plind(x,theta,log.p=T)
-xx <- qlind(px,theta,log.p=T)
-e <- (xx-x)
-range(e) ## this isn't great exp in the upper tail - is it down to lamW function, seems more significant on tails??
 
 
 ## ## test gradient of G(x)

@@ -2,14 +2,29 @@
 ## test of the pel distribution
 
 ## Test silent running and failing when expected
-for(v in c(0.1,1,4)){
-    expect_silent({
-        x <- rpel(10,2,v,2)
-        d <- dpel(x,2,v,2)
-        p <- ppel(x,2,v,2)
-        q <- qpel(p,2,v,2)
-    })
-}
+expect_silent({
+    v <- 0.1
+    x <- rpel(10,2,v,2)
+    d <- dpel(x,2,v,2)
+    p <- ppel(x,2,v,2)
+    q <- qpel(p,2,v,2)
+})
+expect_silent({
+    v <- 1
+    x <- rpel(10,2,v,2)
+    d <- dpel(x,2,v,2)
+    p <- ppel(x,2,v,2)
+    q <- qpel(p,2,v,2)
+})
+expect_silent({
+    v <- 4
+    x <- rpel(10,2,v,2)
+    d <- dpel(x,2,v,2)
+    p <- ppel(x,2,v,2)
+    q <- qpel(p,2,v,2)
+})
+
+
 expect_error( { x <- rpel(10,-1,1,2) } )
 expect_error( { x <- dpel(0.4,-1,1,2) } )
 expect_error( { x <- ppel(0.4,-1,1,2) } )
@@ -19,34 +34,24 @@ expect_error( { x <- ppel(-0.2,1,1,2) } )
 expect_error( { x <- qpel(-0.2,1,1,2) } )
 expect_error( { x <- qpel(2,1,1,2) } )
 
-## reverse log transform
+## generate some data to lest against
 a <- 10; v <- 1.1; theta <- 3
-set.seed(4522435)
-x <- rpel(100,a,v,theta)
-d <- dpel(x,a,v,theta)
-dd <- dpel(x,a,v,theta,log=TRUE)
-expect_equal(d,exp(dd))
+z <- seq(0,1,length=100) ## cdf values
+x <- qpel(z,a,v,theta) ## evaluation of r.v. at those values
 
-## reversability of p & q - may fail on tails due to lamW
-a <- 10; v <- 1.1; theta <- 3
-set.seed(4522435)
-z <- runif(100)
-x <- qpel(z,a,v,theta)
-zz <- ppel(x,a,v,theta)
-expect_equal(z,zz)
+## log density
+expect_equal( dpel(x,a,v,theta), exp(dpel(x,a,v,theta,log=TRUE)) )
 
-x <- qpel(z,a,v,theta,lower.tail=F)
-zz <- ppel(x,a,v,theta,lower.tail=F)
-expect_equal(z,zz)
+## reversability of ppel & qpel
+expect_equal( z, ppel(x,a,v,theta) )
+expect_equal( 1-z, ppel(x,a,v,theta,lower.tail=F) )
 
-lz <- log(z)
-x <- qpel(lz,a,v,theta,lower.tail=F,log.p=T)
-lzz <- ppel(x,a,v,theta,lower.tail=F,log.p=T)
-expect_equal(lz,lzz)
+expect_equal( x, qpel(log(z),a,v,theta,log.p=T) )
+expect_equal( log(z), ppel(x,a,v,theta,log.p=T) )
 
-xx <- qpel(lz,a,v,theta,log.p=T)
-lzz <- ppel(x,a,v,theta,log.p=T)
-expect_equal(lz,lzz)
+expect_equal( x, qpel(log(1-z),a,v,theta,log.p=T,lower.tail=F) )
+expect_equal( log(1-z), ppel(x,a,v,theta,log.p=T,lower.tail=F) )
+
 
 
 
