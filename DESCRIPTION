@@ -15,3 +15,4 @@ Encoding: UTF-8
 Imports: lamW
 Suggests: tinytest
 LazyData: true
+RoxygenNote: 7.2.3

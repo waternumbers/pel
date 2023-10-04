@@ -140,6 +140,30 @@ fitPEL <- function(x,start=list(a=1,v=1,theta=1),lower=c(1e-10,1e-10,1e-5),...){
                    n = n), class = "fitdistr")
 }
 
+## function for fitting to a random sample
+## returns a fitdistr object
+fitPEL2 <- function(x,start=list(a=1,v=1,theta=1),lower=c(1e-10,1e-10,1e-5),...){
+    if (missing(x) || length(x) == 0L || mode(x) != "numeric") 
+        stop("'x' must be a non-empty numeric vector")
+    if (any(!is.finite(x))) 
+        stop("'x' contains missing or infinite values")
+    n <- length(x)
+
+    res <- optim(start,npel,gnpel,method="L-BFGS-B",lower=lower,x=x,...)
+    
+    ## work out Hessian
+    ## a bit awkward since optim will put in values outside of the lower and upper ranges
+    vc <- sds <- NULL
+    tryCatch({
+        vc <- solve( optimHess(res$par, npel, gnpel, x=x,...) )
+        sds <- sqrt(diag(vc))
+    },
+    warning = function(w){warning(paste("Unable to compute Variance:",w$message))},
+    error = function(e){warning(paste("Unable to compute Variance:",e$message))})
+    
+    structure(list(estimate = res$par, sd = sds, vcov = vc, loglik = -res$value, 
+                   n = n), class = "fitdistr")
+}
 
 ## ## negative log likelihood with optimal v value
 ## ## private function for use in fitting

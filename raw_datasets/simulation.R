@@ -32,15 +32,16 @@ for(nm in names(sim_data)){
     for(tt in c(10,40,70,100)){
         print(tt)
         for(ii in 1:ncol(X)){
-            ft <- fitPEL(X[1:tt,ii],start=p0)
+            ##ft <- fitPEL(X[1:tt,ii],start=p0)
+            ft <- fitPEL2(X[1:tt,ii],start=p0)
             out[[paste(tt)]]$E[,ii] <- ft$estimate
             out[[paste(tt)]]$llkl[ii] <- ft$loglik
         }
     }
     rec[[nm]] <- out
 }
-save(rec,file="./data/sim_fits.rda")
-tools::resaveRdaFiles("./data/sim_fits.rda")
+save(rec,file="./data/sim_fits2.rda")
+tools::resaveRdaFiles("./data/sim_fits2.rda")
         
 
 

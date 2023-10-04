@@ -44,7 +44,7 @@ The quantile function $F^{-1}\left(z\right)$ which returns $x$ such that $F\left
 \begin{equation}
   G\left(x\right) = \left\{
     \begin{array}{cl}
-      \left( \frac{ \log\left(1-z-zv\right) }{ \log v} \right)^{\frac{1}{a}} & a>0,v>0,v\neq1\\
+      \left( \frac{ \log\left(1-z+zv\right) }{ \log v} \right)^{\frac{1}{a}} & a>0,v>0,v\neq1\\
       z^{\frac{1}{a}} & a>0,v=1\\
     \end{array}
     \right.
@@ -75,6 +75,7 @@ The formulation of the PEL distribution differs from that given in \cite{Rajitha
 \begin{equation}
   \lim_{\eta \rightarrow 1} \frac{\eta^\beta -1}{\eta-1} = \beta
 \end{equation}.
+The individual terms within the formulea are also expressed in a way that can be evaluated for $v<1$ specifically by not simplifying $\log\left(\frac{\log v}{v-1}\right)$ in (\ref{eq:loglike}).
 
 \subsection{Replication of PEL plots}
 
@@ -149,24 +150,8 @@ legend("bottomright",c(expression(paste("a=0.8, v=2, ",theta,"=2")),
 \label{fig:cdf}
 \end{figure}
 
-
-
-
-This provides a continous range for $v$ which aids the numerical optimisation used in maximum likihood estimation (see Sections~\ref{sec:sim}). 
-
-
-Ensuring individual terms within the formulea can be evaluated for $v<1$ by not simplifying $\log\left(\frac{\log v}{v-1}\right)$ in (\ref{eq:loglike}).
-
-
-\section{Simulation Study}
-\label{sec:sim}
-
-
-
-
-
-
-\subsection{Maximum Likelihood estimation}
+\section{Maximum Likelihood estimation}
+\label{sec:ml}
 
 Given a sample of data $\mathbf{x} = \left(x_{1},x_{2},\ldots,x_{n}\right)$ the log likelihood can be written as
 
@@ -183,7 +168,7 @@ Given a sample of data $\mathbf{x} = \left(x_{1},x_{2},\ldots,x_{n}\right)$ the 
     \right.
 \end{equation}
 
-The gradient of log-likelihood with respect to $a$ and $v$ is readily computed as
+As in \cite{Rajitha2022} the gradient of log-likelihood with respect to $a$ and $v$ is readily computed as
 
 \begin{equation}
 \frac{\partial l}{\partial a} = \frac{n}{a} + \sum \log\left(G\left(x\right)\right) +
@@ -222,20 +207,26 @@ and
 \frac{\partial}{\partial \theta} \log \left( g\left(x\right) \right) = \frac{2}{\theta} - \frac{1}{1+\theta} -x
 \end{equation}
 
+Little is said about the numerical solution of the ML estimator in \cite{Rajitha2022}. It can be infered from the text that a numerical scheme, coded in R <ref>, utilising a Newton-Raphlson step and seeking to set the gradients to zero was used.
+In the following sections we present results derived using the box constrained version of the BFGS quasi-Newton method \cite{Byrd1995} implimented in the \code{optim} function in R v4.3.
 
-\begin{itemize}
-\item{negative branch of lambert W function is?? Which implimentation have they used?? Current code uses lamW package}
-\item{what happens as v --> 1. At the moment set to fail in code to match paper. This will make ML optimisation interesting - not addressed in paper}
-\item{what happens to CDF and pdf as x-->0}
-\item{Paper indicates ML estimation done in R by setting gradients to 0 - suspect given Newton-Raphlson step mentioned that actually done using one of the base R optimiser to minimising log likelihood using gradients}
-\item{log-likelihood given in paper can;t be evaluated for v<1}
-\item{lim v->1 log(v)/(v-1) =1}
-\end{itemize}
+\section{Simulation Study}
+\label{sec:sim}
 
-<<results=tex, echo = FALSE>>=
-set.seed(72843)
-fivenum(rnorm(1000))
-@
+<<<echo=FALSE>>=
+df <- list()
+for(ii in names(sf)){
+    df[[ii]] <- data.frame(n=c(as.integer(ii),NA,NA),
+                           Mean=rowMeans(sf[[ii]]$E),
+                           RMSE=apply(sf[[ii]]$E,1,sd),
+                           t(apply(sf[[ii]]$E,1,fivenum)))
+}
+print(xtable(do.call(rbind,df)))
+@  
+
+
+
+
 
 \section{Analysis of Covid Data}
 \label{sec:covid}
@@ -287,7 +278,10 @@ ds3 <- c(174, 161, 132, 136, 131, 144, 148, 140, 127, 122, 108, 104,
 @ 
 
 
-
+Byrd, R. H., Lu, P., Nocedal, J. and Zhu, C. (1995).  A limited
+     memory algorithm for bound constrained optimization.  _SIAM
+     Journal on Scientific Computing_, *16*, 1190-1208.
+     doi:10.1137/0916069 <https://doi.org/10.1137/0916069>.
 %%\input{content.Rnw}
 
 \hypersetup{linkcolor=black,urlcolor=darkgray}

@@ -1,0 +1,60 @@
+rm(list=ls())
+#n <- 10
+#a <- 0.5
+#v <- 10
+#theta <- 0.3
+#x <- rpel(n,a,v,theta)
+a <- 7
+v <- 6
+theta <- 2
+x <- sim_data[[1]]$X[,834]
+pp <- fitPEL(x)
+a <- pp$est[1]
+v <- pp$est[2]
+theta <- pp$est[3]
+
+Ga <- plind(x,theta)^a
+n <- length(x)
+
+## check wrt v
+vv <- seq(0.9*v,1.1*v,length=1000);
+yy <- sapply(vv, function(xx){ npel(c(a,xx,theta),x)})
+dyy <- sapply(vv, function(xx){ gnpel(c(a,xx,theta),x)[2]})
+dyy2 <- -( sum(Ga) + n*( (1/log(vv)) - (vv/(vv-1))))/vv;
+layout(matrix(1:2))
+plot(vv,yy)
+plot(vv,dyy); lines(vv,dyy2)
+print(c(vv[which.min(yy)], vv[which.min(abs(dyy))]))
+
+## check wrt a
+aa <- seq(0.9*a,1.1*a,length=1000);
+yy <- sapply(aa, function(xx){ npel(c(xx,v,theta),x)})
+dyy <- sapply(aa, function(xx){ gnpel(c(xx,v,theta),x)[1]})
+##dyy <- (1/vv)*(sum(Ga)+n*( (1/log(vv)) + (vv/(vv-1))));
+layout(matrix(1:2))
+plot(aa,yy)
+plot(aa,dyy)
+print(c(aa[which.min(yy)], aa[which.min(abs(dyy))]))
+
+## check wrt theta
+th <- seq(0.9*theta,1.1*theta,length=1000);
+yy <- sapply(th, function(xx){ npel(c(a,v,xx),x)})
+dyy <- sapply(th, function(xx){ gnpel(c(a,v,xx),x)[3]})
+##dyy <- (1/vv)*(sum(Ga)+n*( (1/log(vv)) + (vv/(vv-1))));
+layout(matrix(1:2))
+plot(th,yy)
+plot(th,dyy)
+print(c(th[which.min(yy)], th[which.min(abs(dyy))]))
+
+
+## maybe sum(G^a) <1??
+S <- 0.5
+n <- 10
+
+v <- sort(c(seq(0.9,1.1,length=1000),1))
+y <- S/v + n/(v*log(v)) - n/(v-1)
+plot(v,y)
+
+v <- seq(1,1.1,length=1000)
+y <- S/v + n/(v*log(v)) - n/(v-1)
+plot(v,y)
